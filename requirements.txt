@@ -1,0 +1,7 @@
+streamlit
+numpy
+pymongo
+scikit-learn
+sentence-transformers
+textblob
+pickle-mixin
