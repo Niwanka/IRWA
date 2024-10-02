@@ -13,6 +13,8 @@ db = client["searchEngine"]
 collection = db["Recipe"]
 pdf_collection = db['pdf_files']  # Collection for PDFs
 
+
+
 # Load pre-trained model for generating query embeddings
 model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
