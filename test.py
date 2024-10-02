@@ -9,9 +9,11 @@ import pickle
 
 # MongoDB client setup
 client = MongoClient("mongodb://localhost:27017/")
-db = client["IRWA"]
+db = client["recipieDB"]
 collection = db["recipies"]
 pdf_collection = db['recipiePDFS']  # Collection for PDFs
+
+
 
 # Load pre-trained model for generating query embeddings
 model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
@@ -124,23 +126,31 @@ def search_pdf(query_embedding, top_n=10):
 # Function to show recipe details
 def show_recipe_details(recipe_id):
     recipe = collection.find_one({"RecipeId": recipe_id})
-    
+    if recipe is None:
+        st.write("Recipe not found!")
+        return
+
+    st.write(recipe)  # Debug to check if recipe data is correct
+
     st.title(recipe['Name'])
     st.write(f"**Author:** {recipe['AuthorName']}")
-    
-    # Format cook time and prep time
-    cook_time = recipe['CookTime']
-    prep_time = recipe['PrepTime']
-    
+
+    # Cook time and prep time
+    cook_time = recipe.get('CookTime', 'N/A')
+    prep_time = recipe.get('PrepTime', 'N/A')
+
     st.write(f"**Cook Time:** {cook_time}")
     st.write(f"**Prep Time:** {prep_time}")
-    
-    # Format ingredients and instructions
-    formatted_ingredients = recipe['RecipeIngredientParts']
-    formatted_instructions = recipe['RecipeInstructions']
-    
+
+    # Ingredients and instructions
+    formatted_ingredients = recipe.get('RecipeIngredientParts', [])
+    formatted_ingredients_quantities= recipe.get('RecipeIngredientQuantities',[])
+    formatted_instructions = recipe.get('RecipeInstructions', 'No instructions available.')
+
     st.write(f"**Ingredients:** {formatted_ingredients}")
+    st.write(f"**Quantities:** {formatted_ingredients_quantities}")
     st.write(f"**Instructions:** {formatted_instructions}")
+
 st.markdown(
     """
     <style>
@@ -235,7 +245,8 @@ if correct_query:
         for result in results:
             if st.button(result['Name'], key=result['RecipeId']):
                 st.session_state['selected_recipe'] = result['RecipeId']
-                st.experimental_rerun()
+                #st.experimental_rerun()
+                st.rerun() 
 
     elif search_type == "Nearest Neighbors":
         results = search_with_nearest_neighbors(query_embedding)
@@ -243,7 +254,8 @@ if correct_query:
         for result in results:
             if st.button(result['Name'], key=result['RecipeId']):
                 st.session_state['selected_recipe'] = result['RecipeId']
-                st.experimental_rerun()
+                #st.experimental_rerun()
+                st.rerun() 
 
     elif search_type == "Cluster-Based":
         results = search_using_clusters(query_embedding)
@@ -251,7 +263,8 @@ if correct_query:
         for result in results:
             if st.button(result['Name'], key=result['RecipeId']):
                 st.session_state['selected_recipe'] = result['RecipeId']
-                st.experimental_rerun()
+                #st.experimental_rerun()
+                st.rerun() 
 
     elif search_type == "PDF Search":
         pdf_results = search_pdf(query_embedding)
