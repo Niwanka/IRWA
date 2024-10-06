@@ -278,4 +278,3 @@ if 'selected_recipe' in st.session_state:
 
 # Footer section
 st.write("---")
-st.write("Built with ❤️ using Streamlit. Happy Searching!")

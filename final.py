@@ -236,7 +236,8 @@ if correct_query:
         for result in results:
             if st.button(result['Name'], key=result['RecipeId']):
                 st.session_state['selected_recipe'] = result['RecipeId']
-                st.experimental_rerun()
+                #st.experimental_rerun()
+                st.rerun()
 
     elif search_type == "Nearest Neighbors":
         results = search_with_nearest_neighbors(query_embedding)
@@ -244,7 +245,8 @@ if correct_query:
         for result in results:
             if st.button(result['Name'], key=result['RecipeId']):
                 st.session_state['selected_recipe'] = result['RecipeId']
-                st.experimental_rerun()
+                #st.experimental_rerun()
+                st.rerun()
 
     elif search_type == "Cluster-Based":
         results = search_using_clusters(query_embedding)
@@ -252,7 +254,8 @@ if correct_query:
         for result in results:
             if st.button(result['Name'], key=result['RecipeId']):
                 st.session_state['selected_recipe'] = result['RecipeId']
-                st.experimental_rerun()
+                #st.experimental_rerun()
+                st.rerun()
 
     elif search_type == "PDF Search":
         pdf_results = search_pdf(query_embedding)
@@ -266,4 +269,3 @@ if 'selected_recipe' in st.session_state:
 
 # Footer section
 st.write("---")
-st.write("Built with ❤️ using Streamlit. Happy Searching!")
